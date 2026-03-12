@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500">
+  <!-- World Map Background -->
+  <rect width="1000" height="500" fill="#1a1512"/>
+  
+  <!-- Continents Outline -->
+  <g fill="#2d2420" stroke="#E37019" stroke-width="1" opacity="0.8">
+    <!-- North America -->
+    <path d="M50,80 L150,60 L200,80 L250,120 L220,180 L180,200 L120,180 L80,150 L50,120 Z"/>
+    
+    <!-- South America -->
+    <path d="M180,220 L220,200 L260,220 L280,280 L260,350 L220,400 L180,380 L160,320 L170,260 Z"/>
+    
+    <!-- Europe -->
+    <path d="M420,60 L480,50 L520,70 L540,100 L520,130 L480,140 L440,130 L420,100 Z"/>
+    
+    <!-- Africa -->
+    <path d="M420,150 L480,140 L540,160 L560,220 L540,300 L500,350 L440,340 L400,300 L390,240 L400,180 Z"/>
+    
+    <!-- Asia -->
+    <path d="M540,60 L650,40 L800,50 L880,80 L900,130 L880,180 L820,200 L750,220 L680,200 L620,180 L560,160 L540,120 Z"/>
+    
+    <!-- Australia -->
+    <path d="M780,320 L860,300 L920,330 L920,380 L860,410 L800,390 L770,360 Z"/>
+  </g>
+  
+  <!-- Grid Lines -->
+  <g stroke="#E37019" stroke-width="0.5" opacity="0.3">
+    <line x1="0" y1="125" x2="1000" y2="125"/>
+    <line x1="0" y1="250" x2="1000" y2="250"/>
+    <line x1="0" y1="375" x2="1000" y2="375"/>
+    <line x1="250" y1="0" x2="250" y2="500"/>
+    <line x1="500" y1="0" x2="500" y2="500"/>
+    <line x1="750" y1="0" x2="750" y2="500"/>
+  </g>
+  
+  <!-- Major Countries Highlight -->
+  <g fill="#E37019" opacity="0.6">
+    <!-- Pakistan Region (highlighted) -->
+    <ellipse cx="615" cy="145" rx="35" ry="25"/>
+  </g>
+</svg>
