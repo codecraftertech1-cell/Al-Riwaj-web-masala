@@ -177,40 +177,26 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="spotlight reveal">
-        <div className="container spotlight-inner">
-          <div className="spotlight-card">
-            <h3> {homeData?.videoTitle || 'Al-Riwaj Introduction'}</h3>
-            <p>{homeData?.videoDesc || 'Discover the Secret Behind Rich Taste and Premium Quality.'}</p>
-            <div className="video-embed">
+      <section className="spotlight reveal" style={{ padding: '60px 0' }}>
+        <div style={{ display: 'block', width: '100%', maxWidth: '100%' }}>
+          <div style={{ maxWidth: '100%', margin: '0 auto', width: '100%', padding: '0' }}>
+            <h3 style={{ textAlign: 'center', padding: '0 20px', color: '#d4a574', fontSize: '2.5rem', fontWeight: '600' }}>{homeData?.videoTitle || 'Al-Riwaj Introduction'}</h3>
+            <p style={{ textAlign: 'center', padding: '0 20px' }}>{homeData?.videoDesc || 'Discover the Secret Behind Rich Taste and Premium Quality.'}</p>
+            <div style={{ width: '100%', maxWidth: '100%', marginTop: '20px' }}>
               <video
                 controls
+                autoPlay
+                muted
+                loop
+                playsInline
                 poster={homeData?.videoPoster || '/brand/video-poster.jpg'}
-                className="video-player"
+                style={{ width: '100%', height: 'auto', maxHeight: '80vh', objectFit: 'contain', background: '#000' }}
               >
                 <source src={homeData?.videoUrl || '/brand/intro.mp4'} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
           </div>
-          <form className="spotlight-form">
-            <h4>Learn more</h4>
-            <label>
-              Name
-              <input type="text" placeholder="Enter your name" />
-            </label>
-            <label>
-              Email
-              <input type="email" placeholder="Enter your email" />
-            </label>
-            <label>
-              Phone
-              <input type="tel" placeholder="Phone number" />
-            </label>
-            <button type="button" className="form-btn">
-              Submit Form
-            </button>
-          </form>
         </div>
       </section>
 

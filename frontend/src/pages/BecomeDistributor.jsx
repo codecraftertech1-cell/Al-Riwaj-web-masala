@@ -180,18 +180,26 @@ export default function BecomeDistributor() {
       </section>
 
       {/* Benefits Section */}
-      <section className="benefits-section">
+      <section className="benefits-section" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', padding: '4rem 0' }}>
         <div className="container">
-          <h2 className="section-title reveal">Why Partner With Us?</h2>
-          <p className="section-subtitle reveal">
+          <h2 className="section-title reveal" style={{ color: '#fff' }}>Why Partner With Us?</h2>
+          <p className="section-subtitle reveal" style={{ color: 'rgba(255,255,255,0.8)' }}>
             We offer comprehensive support to help our distributors succeed
           </p>
           <div className="benefits-grid">
             {benefits.map((benefit, index) => (
-              <div key={index} className="benefit-card reveal" style={{animationDelay: `${index * 0.1}s`}}>
-                <div className="benefit-icon">{benefit.icon}</div>
-                <h3>{benefit.title}</h3>
-                <p>{benefit.description}</p>
+              <div key={index} className="benefit-card reveal" style={{
+                animationDelay: `${index * 0.1}s`,
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '16px',
+                padding: '2rem',
+                color: '#fff'
+              }}>
+                <div className="benefit-icon" style={{ color: '#667eea' }}>{benefit.icon}</div>
+                <h3 style={{ color: '#fff' }}>{benefit.title}</h3>
+                <p style={{ color: 'rgba(255,255,255,0.8)' }}>{benefit.description}</p>
               </div>
             ))}
           </div>
@@ -199,37 +207,50 @@ export default function BecomeDistributor() {
       </section>
 
       {/* Requirements Section */}
-      <section className="requirements-section">
+      <section className="requirements-section" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', padding: '4rem 0' }}>
         <div className="container">
-          <div className="requirements-content">
-            <div className="requirements-text">
-              <h2 className="section-title reveal">Requirements</h2>
-              <p className="reveal">
+          <div className="requirements-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div className="requirements-text" style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '16px',
+              padding: '2rem'
+            }}>
+              <h2 className="section-title reveal" style={{ color: '#fff' }}>Requirements</h2>
+              <p className="reveal" style={{ color: 'rgba(255,255,255,0.8)' }}>
                 To maintain our quality standards, we have specific requirements for our distribution partners:
               </p>
-              <ul className="requirements-list reveal">
+              <ul className="requirements-list reveal" style={{ color: '#fff' }}>
                 {requirements.map((req, index) => (
-                  <li key={index}>
-                    <FaCheck className="check-icon" />
+                  <li key={index} style={{ color: '#fff' }}>
+                    <FaCheck className="check-icon" style={{ color: '#28a745' }} />
                     {req}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="contact-info reveal">
-              <h3>Have Questions?</h3>
-              <p>Our distribution team is ready to assist you</p>
+            <div className="contact-info reveal" style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '16px',
+              padding: '2rem',
+              color: '#fff'
+            }}>
+              <h3 style={{ color: '#fff' }}>Have Questions?</h3>
+              <p style={{ color: 'rgba(255,255,255,0.8)' }}>Our distribution team is ready to assist you</p>
               <div className="contact-methods">
-                <div className="contact-item">
-                  <FaPhone />
+                <div className="contact-item" style={{ color: '#fff' }}>
+                  <FaPhone style={{ color: '#667eea' }} />
                   <span>+92-42-111-245-111</span>
                 </div>
-                <div className="contact-item">
-                  <FaEnvelope />
+                <div className="contact-item" style={{ color: '#fff' }}>
+                  <FaEnvelope style={{ color: '#667eea' }} />
                   <span>distribution@alriwaj.com</span>
                 </div>
-                <div className="contact-item">
-                  <FaMapMarkerAlt />
+                <div className="contact-item" style={{ color: '#fff' }}>
+                  <FaMapMarkerAlt style={{ color: '#667eea' }} />
                   <span>Lahore, Pakistan</span>
                 </div>
               </div>
@@ -239,16 +260,22 @@ export default function BecomeDistributor() {
       </section>
 
       {/* Application Form Section */}
-      <section className="application-section">
+      <section className="application-section" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', padding: '4rem 0' }}>
         <div className="container">
-          <h2 className="section-title reveal">Apply Now</h2>
-          <p className="section-subtitle reveal">
+          <h2 className="section-title reveal" style={{ color: '#fff' }}>Apply Now</h2>
+          <p className="section-subtitle reveal" style={{ color: 'rgba(255,255,255,0.8)' }}>
             Fill out the form below and our team will get back to you
           </p>
-          <form className="distributor-form reveal" onSubmit={handleSubmit}>
+          <form className="distributor-form reveal" onSubmit={handleSubmit} style={{ 
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '16px',
+            padding: '2rem'
+          }}>
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="companyName">Company / Business Name *</label>
+                <label htmlFor="companyName" style={{ color: '#fff' }}>Company / Business Name *</label>
                 <input
                   type="text"
                   id="companyName"
@@ -257,10 +284,17 @@ export default function BecomeDistributor() {
                   onChange={handleChange}
                   required
                   placeholder="Enter your business name"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '0.75rem',
+                    borderRadius: '8px'
+                  }}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="ownerName">Owner / Contact Person *</label>
+                <label htmlFor="ownerName" style={{ color: '#fff' }}>Owner / Contact Person *</label>
                 <input
                   type="text"
                   id="ownerName"
@@ -269,10 +303,17 @@ export default function BecomeDistributor() {
                   onChange={handleChange}
                   required
                   placeholder="Enter your name"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '0.75rem',
+                    borderRadius: '8px'
+                  }}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="email">Email Address *</label>
+                <label htmlFor="email" style={{ color: '#fff' }}>Email Address *</label>
                 <input
                   type="email"
                   id="email"
@@ -281,10 +322,17 @@ export default function BecomeDistributor() {
                   onChange={handleChange}
                   required
                   placeholder="your@email.com"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '0.75rem',
+                    borderRadius: '8px'
+                  }}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="phone">Phone Number *</label>
+                <label htmlFor="phone" style={{ color: '#fff' }}>Phone Number *</label>
                 <input
                   type="tel"
                   id="phone"
@@ -293,10 +341,17 @@ export default function BecomeDistributor() {
                   onChange={handleChange}
                   required
                   placeholder="+92-300-1234567"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '0.75rem',
+                    borderRadius: '8px'
+                  }}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="city">City *</label>
+                <label htmlFor="city" style={{ color: '#fff' }}>City *</label>
                 <input
                   type="text"
                   id="city"
@@ -305,27 +360,41 @@ export default function BecomeDistributor() {
                   onChange={handleChange}
                   required
                   placeholder="Enter your city"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '0.75rem',
+                    borderRadius: '8px'
+                  }}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="monthlyCapacity">Estimated Monthly Order Value *</label>
+                <label htmlFor="monthlyCapacity" style={{ color: '#fff' }}>Estimated Monthly Order Value *</label>
                 <select
                   id="monthlyCapacity"
                   name="monthlyCapacity"
                   value={formData.monthlyCapacity}
                   onChange={handleChange}
                   required
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '0.75rem',
+                    borderRadius: '8px'
+                  }}
                 >
-                  <option value="">Select range</option>
-                  <option value="50k-100k">PKR 50,000 - 100,000</option>
-                  <option value="100k-250k">PKR 100,000 - 250,000</option>
-                  <option value="250k-500k">PKR 250,000 - 500,000</option>
-                  <option value="500k+">PKR 500,000+</option>
+                  <option value="" style={{ color: '#333' }}>Select range</option>
+                  <option value="50k-100k" style={{ color: '#333' }}>PKR 50,000 - 100,000</option>
+                  <option value="100k-250k" style={{ color: '#333' }}>PKR 100,000 - 250,000</option>
+                  <option value="250k-500k" style={{ color: '#333' }}>PKR 250,000 - 500,000</option>
+                  <option value="500k+" style={{ color: '#333' }}>PKR 500,000+</option>
                 </select>
               </div>
             </div>
             <div className="form-group full-width">
-              <label htmlFor="address">Business Address *</label>
+              <label htmlFor="address" style={{ color: '#fff' }}>Business Address *</label>
               <textarea
                 id="address"
                 name="address"
@@ -334,27 +403,34 @@ export default function BecomeDistributor() {
                 required
                 rows={3}
                 placeholder="Enter your complete business address"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: '#fff',
+                  padding: '0.75rem',
+                  borderRadius: '8px'
+                }}
               />
             </div>
             <div className="form-group full-width">
-              <label>Products Interested In *</label>
-              <div className="products-checkboxes">
+              <label style={{ color: '#fff' }}>Products Interested In *</label>
+              <div className="products-checkboxes" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                 {products.map((product, index) => (
-                  <label key={index} className="checkbox-label">
+                  <label key={index} className="checkbox-label" style={{ color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <input
                       type="checkbox"
                       value={product}
                       checked={formData.productsInterested.includes(product)}
                       onChange={handleCheckbox}
+                      style={{ accentColor: '#667eea' }}
                     />
-                    <span className="checkbox-custom"></span>
                     {product}
                   </label>
                 ))}
               </div>
             </div>
             <div className="form-group full-width">
-              <label htmlFor="message">Additional Message</label>
+              <label htmlFor="message" style={{ color: '#fff' }}>Additional Message</label>
               <textarea
                 id="message"
                 name="message"
@@ -362,9 +438,43 @@ export default function BecomeDistributor() {
                 onChange={handleChange}
                 rows={4}
                 placeholder="Tell us more about your business or any questions you have"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: '#fff',
+                  padding: '0.75rem',
+                  borderRadius: '8px'
+                }}
               />
             </div>
-            <button type="submit" className="btn btn-primary btn-large">
+            <button 
+              type="submit" 
+              className="btn btn-primary btn-large"
+              onMouseOver={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #28a745 0%, #218838 100%)';
+                e.target.style.transform = 'scale(1.02)';
+                e.target.style.boxShadow = '0 8px 25px rgba(40, 167, 69, 0.5)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+              }}
+              style={{ 
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                borderRadius: '30px',
+                padding: '1rem 2.5rem',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                color: '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                display: 'block',
+                margin: '2rem auto 0'
+              }}
+            >
               Submit Application
             </button>
           </form>

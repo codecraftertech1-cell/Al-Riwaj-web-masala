@@ -10,17 +10,18 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create default admin user
-        User::updateOrCreate(
-            ['email' => 'admin@alriwaj.com'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('admin123'),
-                'role' => 'admin',
-                'is_active' => true,
-            ]
-        );
+        // Delete existing admin users first
+        User::where('role', 'admin')->delete();
         
-        echo "Admin user created: admin@alriwaj.com / admin123\n";
+        // Create default admin user
+        User::create([
+            'name' => 'M.asifsiddqu@419902',
+            'email' => null,
+            'password' => Hash::make('atta2882'),
+            'role' => 'admin',
+            'is_active' => true,
+        ]);
+        
+        echo "Admin user created: M.asifsiddqu@419902 / atta2882\n";
     }
 }

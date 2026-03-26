@@ -3,7 +3,7 @@ import { getProducts, createProduct, updateProduct, deleteProduct, getCategories
 
 const emptyForm = {
   name: '',
-  category_id: '',
+  category: '',
   price: '',
   stock: '',
   description: '',
@@ -119,7 +119,7 @@ export default function AddProduct() {
   async function handleSubmit(event) {
     event.preventDefault()
 
-    if (!formData.name || !formData.category_id) {
+    if (!formData.name || !formData.category) {
       showMessage('error', 'Please fill in required fields')
       return
     }
@@ -149,7 +149,7 @@ export default function AddProduct() {
 
       const productData = {
         name: formData.name,
-        category_id: parseInt(formData.category_id),
+        category: formData.category,
         price: formData.price ? parseFloat(formData.price) : 0,
         stock_quantity: parseInt(formData.stock) || 0,
         short_description: formData.short_description || null,
@@ -202,7 +202,7 @@ export default function AddProduct() {
     setEditingId(product.id)
     setFormData({
       name: product.name || '',
-      category_id: product.category_id || '',
+      category: product.category || '',
       price: product.price || '',
       stock: product.stock_quantity || '',
       description: product.description || '',
@@ -242,10 +242,9 @@ export default function AddProduct() {
     }
   }
 
-  // Get category name by ID
-  const getCategoryName = (categoryId) => {
-    const category = categories.find(c => c.id === categoryId)
-    return category ? category.name : 'Unknown'
+  // Get category name
+  const getCategoryDisplay = (product) => {
+    return product.category || 'N/A'
   }
 
   return (
@@ -285,17 +284,14 @@ export default function AddProduct() {
             
             <label>
               Category *
-              <select
-                name="category_id"
-                value={formData.category_id}
+              <input
+                name="category"
+                type="text"
+                value={formData.category || ''}
                 onChange={handleChange}
+                placeholder="Enter category name (e.g., Rice, Curry, Drinks)"
                 required
-              >
-                <option value="">Select Category</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
+              />
             </label>
             
             <label>
@@ -440,7 +436,7 @@ export default function AddProduct() {
                           <span>{product.name}</span>
                         </div>
                       </td>
-                        <td>{getCategoryName(product.category_id)}</td>
+                        <td>{getCategoryDisplay(product)}</td>
                         <td>PKR {product.price}</td>
                         <td>{product.stock_quantity || 0}</td>
                         <td>

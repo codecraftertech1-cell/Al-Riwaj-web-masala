@@ -50,19 +50,19 @@ export default function AdminDashboard() {
     { label: 'About', to: '/admin/manage/about' },
     { label: 'Our Management', to: '/admin/manage/management' },
     { label: 'Products Page', to: '/admin/manage/products' },
-    { label: 'Shop Page', to: '/admin/manage/shop' },
-    { label: 'Media Page', to: '/admin/manage/media' },
+    { label: 'Media Page', to: '/admin/media' },
     { label: 'Careers Page', to: '/admin/manage/careers' },
     { label: 'Contact Us Page', to: '/admin/manage/contact' },
     { label: 'Add Product', to: '/admin/add-product' },
-    { label: 'Shop Activity', to: '/admin/shop-activity' },
     { label: 'Manage Inventory', to: '/admin/inventory' },
     { label: 'View Reports', to: '/admin/reports' },
-    { label: 'Manage Users', to: '/admin/users' },
     { label: 'Distributors', to: '/admin/distributors' },
     { label: 'Manage Recipes', to: '/admin/recipes' },
+    { label: 'Manage Leadership', to: '/admin/leadership' },
     { label: 'Career Applications', to: '/admin/manage/careers' },
     { label: 'Contact Messages', to: '/admin/manage/contacts' },
+    { label: 'Manage Navbar', to: '/admin/navbar' },
+    { label: 'Shop Page', to: '/shop' }
   ]
 
   const dashboardStats = [
@@ -107,7 +107,7 @@ export default function AdminDashboard() {
               ))}
             </div>
 
-            <div className="card reveal">
+            <div className="card reveal" style={{ color: '#4a4035' }}>
               <h3>Recent Products (from Database)</h3>
               {loading ? (
                 <p>Loading products...</p>
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            <div className="card reveal">
+            <div className="card reveal" style={{ color: '#4a4035' }}>
               <h3>Database Connection Status</h3>
               <p className="lead">
                 ✓ Connected to MySQL Database: <strong>al_riwaj_db</strong>

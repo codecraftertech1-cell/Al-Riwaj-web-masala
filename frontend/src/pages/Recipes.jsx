@@ -100,9 +100,9 @@ export default function Recipes() {
                   <h3>{recipe.title}</h3>
                   <p>{recipe.description}</p>
                   <div className="recipe-meta">
-                    <span>⏱ {recipe.time}</span>
-                    <span>👥 {recipe.servings}</span>
-                    <span>📊 {recipe.difficulty}</span>
+                    <span className="meta-time">{recipe.time}</span>
+                    <span className="meta-servings">{recipe.servings} persons</span>
+                    <span className={`meta-difficulty ${recipe.difficulty?.toLowerCase()}`}>{recipe.difficulty}</span>
                   </div>
                   <Link to={`/recipes/${recipe.id}`} className="recipe-btn">
                     View Recipe

@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { getMedia, createMedia, updateMedia, deleteMedia, uploadImage } from '../services/api'
 
 const sectionConfig = {
   home: {
@@ -85,6 +86,98 @@ export default function ManageSiteSection() {
 
   const isHome = section === 'home'
   const isAbout = section === 'about'
+  const isMedia = section === 'media'
+
+  // Media state
+  const [mediaItems, setMediaItems] = useState([])
+  const [mediaLoading, setMediaLoading] = useState(true)
+  const [newCaption, setNewCaption] = useState('')
+  const [newCategory, setNewCategory] = useState('news')
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [editingId, setEditingId] = useState(null)
+
+  useEffect(() => {
+    if (isMedia) {
+      fetchMedia()
+    }
+  }, [isMedia])
+
+  const fetchMedia = async () => {
+    try {
+      const response = await getMedia()
+      if (response.success) {
+        setMediaItems(response.data)
+      }
+    } catch (err) {
+      console.error('Error fetching media:', err)
+    } finally {
+      setMediaLoading(false)
+    }
+  }
+
+  const handleUpload = async () => {
+    if (!selectedFile || !newCaption) {
+      alert('Please select an image and enter a caption')
+      return
+    }
+
+    try {
+      // First upload the file
+      const uploadResponse = await uploadImage(selectedFile)
+      
+      if (uploadResponse.success) {
+        // Then create the media record
+        const mediaData = {
+          file_name: uploadResponse.data.file_name,
+          original_name: uploadResponse.data.original_name,
+          mime_type: uploadResponse.data.mime_type,
+          file_path: uploadResponse.data.file_path,
+          file_size: uploadResponse.data.file_size,
+          caption: newCaption,
+          category: newCategory,
+          is_active: true
+        }
+
+        const createResponse = await createMedia(mediaData)
+        
+        if (createResponse.success) {
+          alert('Media added successfully!')
+          setNewCaption('')
+          setSelectedFile(null)
+          fetchMedia()
+        }
+      }
+    } catch (err) {
+      console.error('Error uploading media:', err)
+      alert('Failed to upload media')
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this media?')) return
+
+    try {
+      const response = await deleteMedia(id)
+      if (response.success) {
+        alert('Media deleted successfully!')
+        fetchMedia()
+      }
+    } catch (err) {
+      console.error('Error deleting media:', err)
+      alert('Failed to delete media')
+    }
+  }
+
+  const handleToggleActive = async (id, currentStatus) => {
+    try {
+      const response = await updateMedia(id, { is_active: !currentStatus })
+      if (response.success) {
+        fetchMedia()
+      }
+    } catch (err) {
+      console.error('Error updating media:', err)
+    }
+  }
 
   const handleSave = () => {
     if (isHome) {
@@ -119,6 +212,33 @@ export default function ManageSiteSection() {
     }
   }
 
+  // Save only Hero/Slider/Video section
+  const handleSaveHero = () => {
+    const heroData = {
+      heroTitle,
+      heroSubtitle,
+      heroTagline,
+      heroButton,
+      heroType,
+      heroImages,
+      videoTitle,
+      videoDesc,
+      videoUrl,
+      videoPoster
+    }
+    const existingData = JSON.parse(localStorage.getItem('homePageData') || '{}')
+    localStorage.setItem('homePageData', JSON.stringify({ ...existingData, ...heroData }))
+    alert('Hero section saved!')
+  }
+
+  // Save only Cards/Mixes section
+  const handleSaveMixes = () => {
+    const mixesData = { mixes }
+    const existingData = JSON.parse(localStorage.getItem('homePageData') || '{}')
+    localStorage.setItem('homePageData', JSON.stringify({ ...existingData, ...mixesData }))
+    alert('Cards/Mixes section saved!')
+  }
+
   return (
     <div className="page inner">
       <section className="inner-hero">
@@ -131,7 +251,82 @@ export default function ManageSiteSection() {
 
       <section className="inner-section">
         <div className="container manage-section-grid">
-          {isHome ? (
+          {isMedia ? (
+            // Media Management
+            <div className="card admin-form reveal" style={{ width: '100%' }}>
+              <h3>Add New Media</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                <label>
+                  Caption/Title
+                  <input
+                    type="text"
+                    value={newCaption}
+                    onChange={(e) => setNewCaption(e.target.value)}
+                    placeholder="Enter caption..."
+                  />
+                </label>
+                <label>
+                  Category
+                  <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
+                    <option value="news">News</option>
+                    <option value="campaign">Campaign</option>
+                    <option value="event">Event</option>
+                    <option value="announcement">Announcement</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                Upload Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setSelectedFile(e.target.files[0])}
+                />
+              </label>
+              {selectedFile && (
+                <div style={{ margin: '1rem 0' }}>
+                  <img src={URL.createObjectURL(selectedFile)} alt="Preview" style={{ maxWidth: '200px', borderRadius: '8px' }} />
+                </div>
+              )}
+              <button type="button" className="hero-btn" onClick={handleUpload} style={{ marginTop: '1rem' }}>
+                Add Media
+              </button>
+
+              <h3 style={{ marginTop: '2rem' }}>Existing Media ({mediaItems.length})</h3>
+              {mediaLoading ? (
+                <p>Loading media...</p>
+              ) : mediaItems.length === 0 ? (
+                <p>No media found. Add your first media item above.</p>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                  {mediaItems.map((item) => (
+                    <div key={item.id} style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '1rem', background: '#fafafa' }}>
+                      <img src={item.file_path} alt={item.caption} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px' }} />
+                      <h4 style={{ marginTop: '0.5rem', fontSize: '1rem' }}>{item.caption}</h4>
+                      <p style={{ fontSize: '0.8rem', color: '#666' }}>{item.category}</p>
+                      <p style={{ fontSize: '0.75rem', color: '#888' }}>{item.created_at}</p>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleActive(item.id, item.is_active)}
+                          style={{ padding: '0.3rem 0.8rem', fontSize: '0.8rem', background: item.is_active ? '#2ecc71' : '#e74c3c', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                        >
+                          {item.is_active ? 'Active' : 'Inactive'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          style={{ padding: '0.3rem 0.8rem', fontSize: '0.8rem', background: '#e74c3c', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : isHome ? (
             // Home Page Management Form
             <form className="card admin-form reveal">
               <h3>Edit Home Page</h3>
@@ -170,13 +365,25 @@ export default function ManageSiteSection() {
                           type="file" 
                           accept="image/*" 
                           style={{ marginTop: '0.5rem' }}
-                          onChange={(e) => {
+                          onChange={async (e) => {
                             const file = e.target.files[0]
                             if (file) {
-                              const objectUrl = URL.createObjectURL(file)
-                              const newImages = [...heroImages]
-                              newImages[index] = objectUrl
-                              setHeroImages(newImages)
+                              try {
+                                // Upload to Laravel backend
+                                const response = await uploadImage(file)
+                                if (response.success && response.path) {
+                                  const newImages = [...heroImages]
+                                  newImages[index] = '/' + response.path
+                                  setHeroImages(newImages)
+                                }
+                              } catch (error) {
+                                console.error('Upload failed:', error)
+                                // Fallback to blob URL if upload fails
+                                const objectUrl = URL.createObjectURL(file)
+                                const newImages = [...heroImages]
+                                newImages[index] = objectUrl
+                                setHeroImages(newImages)
+                              }
                             }
                           }} 
                         />
@@ -192,11 +399,22 @@ export default function ManageSiteSection() {
                     </label>
                     <label style={{ marginTop: '0.5rem' }}>
                       Or Upload Video from Computer
-                      <input type="file" accept="video/*" onChange={(e) => {
+                      <input type="file" accept="video/*" onChange={async (e) => {
                         const file = e.target.files[0]
                         if (file) {
-                          const objectUrl = URL.createObjectURL(file)
-                          setVideoUrl(objectUrl)
+                          try {
+                            const formData = new FormData()
+                            formData.append('file', file)
+                            // Upload to backend
+                            const response = await uploadImage(file)
+                            if (response.success && response.path) {
+                              setVideoUrl('/' + response.path)
+                            }
+                          } catch (error) {
+                            console.error('Video upload failed:', error)
+                            const objectUrl = URL.createObjectURL(file)
+                            setVideoUrl(objectUrl)
+                          }
                         }
                       }} />
                     </label>
@@ -206,11 +424,19 @@ export default function ManageSiteSection() {
                     </label>
                     <label style={{ marginTop: '0.5rem' }}>
                       Or Upload Poster from Computer
-                      <input type="file" accept="image/*" onChange={(e) => {
+                      <input type="file" accept="image/*" onChange={async (e) => {
                         const file = e.target.files[0]
                         if (file) {
-                          const objectUrl = URL.createObjectURL(file)
-                          setVideoPoster(objectUrl)
+                          try {
+                            const response = await uploadImage(file)
+                            if (response.success && response.path) {
+                              setVideoPoster('/' + response.path)
+                            }
+                          } catch (error) {
+                            console.error('Poster upload failed:', error)
+                            const objectUrl = URL.createObjectURL(file)
+                            setVideoPoster(objectUrl)
+                          }
                         }
                       }} />
                     </label>
@@ -233,6 +459,15 @@ export default function ManageSiteSection() {
                   Button Text
                   <input type="text" value={heroButton} onChange={(e) => setHeroButton(e.target.value)} />
                 </label>
+                
+                <button 
+                  type="button" 
+                  className="hero-btn" 
+                  onClick={handleSaveHero}
+                  style={{ marginTop: '1rem', marginRight: '10px' }}
+                >
+                  Save Hero Section
+                </button>
               </div>
 
               {/* Video Section */}
@@ -252,11 +487,22 @@ export default function ManageSiteSection() {
                 </label>
                 <label style={{ marginTop: '0.5rem' }}>
                   Or Upload Video from Computer
-                  <input type="file" accept="video/*" onChange={(e) => {
+                  <input type="file" accept="video/*" onChange={async (e) => {
                     const file = e.target.files[0]
                     if (file) {
-                      const objectUrl = URL.createObjectURL(file)
-                      setVideoUrl(objectUrl)
+                      try {
+                        const formData = new FormData()
+                        formData.append('file', file)
+                        // Upload to backend
+                        const response = await uploadImage(file)
+                        if (response.success && response.path) {
+                          setVideoUrl('/' + response.path)
+                        }
+                      } catch (error) {
+                        console.error('Video upload failed:', error)
+                        const objectUrl = URL.createObjectURL(file)
+                        setVideoUrl(objectUrl)
+                      }
                     }
                   }} />
                 </label>
@@ -266,14 +512,31 @@ export default function ManageSiteSection() {
                 </label>
                 <label style={{ marginTop: '0.5rem' }}>
                   Or Upload Poster from Computer
-                  <input type="file" accept="image/*" onChange={(e) => {
+                  <input type="file" accept="image/*" onChange={async (e) => {
                     const file = e.target.files[0]
                     if (file) {
-                      const objectUrl = URL.createObjectURL(file)
-                      setVideoPoster(objectUrl)
+                      try {
+                        const response = await uploadImage(file)
+                        if (response.success && response.path) {
+                          setVideoPoster('/' + response.path)
+                        }
+                      } catch (error) {
+                        console.error('Poster upload failed:', error)
+                        const objectUrl = URL.createObjectURL(file)
+                        setVideoPoster(objectUrl)
+                      }
                     }
                   }} />
                 </label>
+                
+                <button 
+                  type="button" 
+                  className="hero-btn" 
+                  onClick={handleSaveHero}
+                  style={{ marginTop: '1rem', marginRight: '10px' }}
+                >
+                  Save Video Section
+                </button>
               </div>
 
               {/* Cards/Mixes Section */}
@@ -296,17 +559,34 @@ export default function ManageSiteSection() {
                     </label>
                     <label style={{ marginTop: '0.5rem' }}>
                       Or Upload from Computer
-                      <input type="file" accept="image/*" onChange={(e) => {
+                      <input type="file" accept="image/*" onChange={async (e) => {
                         const file = e.target.files[0]
                         if (file) {
-                          const objectUrl = URL.createObjectURL(file)
-                          handleMixChange(index, 'image', objectUrl)
+                          try {
+                            const response = await uploadImage(file)
+                            if (response.success && response.path) {
+                              handleMixChange(index, 'image', '/' + response.path)
+                            }
+                          } catch (error) {
+                            console.error('Upload failed:', error)
+                            const objectUrl = URL.createObjectURL(file)
+                            handleMixChange(index, 'image', objectUrl)
+                          }
                         }
                       }} />
                     </label>
                   </div>
                 ))}
               </div>
+
+              <button 
+                type="button" 
+                className="hero-btn" 
+                onClick={handleSaveMixes}
+                style={{ marginBottom: '1rem' }}
+              >
+                Save Cards / Mixes
+              </button>
 
               <label>
                 Publish Status
@@ -316,7 +596,6 @@ export default function ManageSiteSection() {
                   <option>Under Review</option>
                 </select>
               </label>
-              <button type="button" className="hero-btn" onClick={handleSave}>Save All Changes</button>
             </form>
           ) : (
             // Other Pages Management Form
@@ -372,11 +651,19 @@ export default function ManageSiteSection() {
                 </label>
                 <label style={{ marginTop: '0.5rem' }}>
                   Or Upload Image
-                  <input type="file" accept="image/*" onChange={(e) => {
+                  <input type="file" accept="image/*" onChange={async (e) => {
                     const file = e.target.files[0]
                     if (file) {
-                      const objectUrl = URL.createObjectURL(file)
-                      setAboutStoryImage(objectUrl)
+                      try {
+                        const response = await uploadImage(file)
+                        if (response.success && response.path) {
+                          setAboutStoryImage('/' + response.path)
+                        }
+                      } catch (error) {
+                        console.error('Upload failed:', error)
+                        const objectUrl = URL.createObjectURL(file)
+                        setAboutStoryImage(objectUrl)
+                      }
                     }
                   }} />
                 </label>
@@ -400,11 +687,19 @@ export default function ManageSiteSection() {
                 </label>
                 <label style={{ marginTop: '0.5rem' }}>
                   Or Upload Image
-                  <input type="file" accept="image/*" onChange={(e) => {
+                  <input type="file" accept="image/*" onChange={async (e) => {
                     const file = e.target.files[0]
                     if (file) {
-                      const objectUrl = URL.createObjectURL(file)
-                      setAboutPurposeImage(objectUrl)
+                      try {
+                        const response = await uploadImage(file)
+                        if (response.success && response.path) {
+                          setAboutPurposeImage('/' + response.path)
+                        }
+                      } catch (error) {
+                        console.error('Upload failed:', error)
+                        const objectUrl = URL.createObjectURL(file)
+                        setAboutPurposeImage(objectUrl)
+                      }
                     }
                   }} />
                 </label>

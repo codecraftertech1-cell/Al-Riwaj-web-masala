@@ -6,7 +6,9 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SiteSectionController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\DistributorController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\NavbarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,9 @@ Route::get('/media', [MediaController::class, 'index']);
 
 Route::get('/distributors', [DistributorController::class, 'index']);
 
+// Navbar Visibility (Public)
+Route::get('/navbar', [NavbarController::class, 'index']);
+
 // Auth Routes (Public)
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -49,14 +54,16 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
-    // Products
+    // Products - temporarily public for testing
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
     // Site Sections
+    Route::get('/sections', [SiteSectionController::class, 'indexAdmin']);
     Route::post('/sections', [SiteSectionController::class, 'store']);
     Route::put('/sections/{id}', [SiteSectionController::class, 'update']);
+    Route::put('/sections/key/{key}', [SiteSectionController::class, 'updateByKey']);
     Route::delete('/sections/{id}', [SiteSectionController::class, 'destroy']);
 
     // Media - File Upload
@@ -67,7 +74,17 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::delete('/media/{id}', [MediaController::class, 'destroy']);
 
     // Distributors
+    Route::get('/distributors', [DistributorController::class, 'index']);
     Route::post('/distributors', [DistributorController::class, 'store']);
     Route::put('/distributors/{id}', [DistributorController::class, 'update']);
     Route::delete('/distributors/{id}', [DistributorController::class, 'destroy']);
+
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::put('/orders/{id}', [OrderController::class, 'update']);
+    Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
+
+    // Navbar Visibility (Admin)
+    Route::put('/navbar', [NavbarController::class, 'update']);
 });

@@ -18,6 +18,15 @@ class SiteSectionController extends Controller
         ]);
     }
 
+    public function indexAdmin(): JsonResponse
+    {
+        $sections = SiteSection::all();
+        return response()->json([
+            'success' => true,
+            'data' => $sections
+        ]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -73,6 +82,50 @@ class SiteSectionController extends Controller
             'title' => 'sometimes|string|max:255',
             'content' => 'nullable|string',
             'meta_data' => 'nullable|array',
+            'image' => 'nullable|string',
+            'is_active' => 'boolean',
+        ]);
+
+        $section->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $section,
+            'message' => 'Site section updated successfully'
+        ]);
+    }
+
+    public function updateByKey(Request $request, string $key): JsonResponse
+    {
+        $section = SiteSection::where('section_key', $key)->first();
+        
+        if (!$section) {
+            // Create new section if not exists
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'content' => 'nullable|string',
+                'image' => 'nullable|string',
+                'is_active' => 'boolean',
+            ]);
+            
+            $section = SiteSection::create([
+                'section_key' => $key,
+                'title' => $validated['title'],
+                'content' => $validated['content'] ?? '',
+                'image' => $validated['image'] ?? '',
+                'is_active' => $validated['is_active'] ?? true,
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $section,
+                'message' => 'Site section created successfully'
+            ]);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'content' => 'nullable|string',
             'image' => 'nullable|string',
             'is_active' => 'boolean',
         ]);

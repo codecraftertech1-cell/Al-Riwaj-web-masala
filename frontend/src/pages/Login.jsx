@@ -4,7 +4,7 @@ import { login } from '../services/api'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,7 +15,7 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const response = await login(email, password)
+      const response = await login(name, password)
       
       if (response.success) {
         // Redirect to dashboard after successful login
@@ -54,12 +54,12 @@ export default function Login() {
             )}
             
             <label>
-              Email Address
+              Username
               <input 
-                type="email" 
-                placeholder="admin@email.com" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text" 
+                placeholder="Enter username" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </label>

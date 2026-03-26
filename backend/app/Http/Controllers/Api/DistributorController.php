@@ -13,15 +13,21 @@ class DistributorController extends Controller
     {
         $query = Distributor::query();
 
+        // If not authenticated (public), only show active and verified
+        $token = $request->bearerToken();
+        if (!$token) {
+            $query->where('is_active', true)->where('is_verified', true);
+        }
+
         if ($request->has('city')) {
             $query->where('city', 'like', '%' . $request->city . '%');
         }
 
         if ($request->has('verified')) {
-            $query->verified();
+            $query->where('is_verified', true);
         }
 
-        $distributors = $query->active()->orderBy('name')->get();
+        $distributors = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'success' => true,

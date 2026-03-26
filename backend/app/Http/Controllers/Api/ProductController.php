@@ -13,8 +13,8 @@ class ProductController extends Controller
     {
         $query = Product::with('category')->active();
 
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
+        if ($request->has('category')) {
+            $query->where('category', $request->category);
         }
 
         if ($request->has('featured')) {
@@ -36,7 +36,7 @@ class ProductController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
+            'category' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:products,slug',
             'short_description' => 'nullable|string',
@@ -53,6 +53,11 @@ class ProductController extends Controller
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ]);
+
+        // Auto-generate slug if not provided
+        if (!isset($validated['slug']) || empty($validated['slug'])) {
+            $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
+        }
 
         $product = Product::create($validated);
 
@@ -78,7 +83,7 @@ class ProductController extends Controller
 
         // Build validation rules - include image for updates
         $rules = [
-            'category_id' => 'sometimes|nullable|exists:categories,id',
+            'category' => 'sometimes|nullable|string|max:255',
             'name' => 'sometimes|nullable|string|max:255',
             'slug' => 'sometimes|nullable|string|unique:products,slug,' . $id,
             'short_description' => 'nullable|string',

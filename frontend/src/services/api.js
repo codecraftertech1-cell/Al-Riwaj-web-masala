@@ -99,10 +99,15 @@ export const getProduct = (id) => apiCall(`/products/${id}`);
 
 // Site Sections
 export const getSections = () => apiCall('/sections');
+export const getSectionsAdmin = () => apiCall('/admin/sections');
 export const getSectionByKey = (key) => apiCall(`/sections/${key}`);
 
 // Media
 export const getMedia = (category = '') => apiCall(`/media${category ? `?category=${category}` : ''}`);
+
+// Navbar
+export const getNavbarSettings = () => apiCall('/navbar');
+export const updateNavbarSettings = (data) => apiCall('/admin/navbar', { method: 'PUT', body: JSON.stringify(data) });
 
 // Distributors
 export const getDistributors = (params = {}) => {
@@ -125,6 +130,7 @@ export const deleteProduct = (id) => apiCall(`/admin/products/${id}`, { method: 
 // Site Sections (Admin)
 export const createSection = (data) => apiCall('/admin/sections', { method: 'POST', body: JSON.stringify(data) });
 export const updateSection = (id, data) => apiCall(`/admin/sections/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+export const updateSectionByKey = (key, data) => apiCall(`/admin/sections/key/${key}`, { method: 'PUT', body: JSON.stringify(data) });
 export const deleteSection = (id) => apiCall(`/admin/sections/${id}`, { method: 'DELETE' });
 
 // Media (Admin)
@@ -147,15 +153,28 @@ export const deleteImage = async (filePath) => {
 };
 
 // Distributors (Admin)
+export const getDistributorsAdmin = (params = {}) => {
+  const queryString = new URLSearchParams(params).toString();
+  return apiCall(`/admin/distributors${queryString ? `?${queryString}` : ''}`);
+};
 export const createDistributor = (data) => apiCall('/admin/distributors', { method: 'POST', body: JSON.stringify(data) });
 export const updateDistributor = (id, data) => apiCall(`/admin/distributors/${id}`, { method: 'PUT', body: JSON.stringify(data) });
 export const deleteDistributor = (id) => apiCall(`/admin/distributors/${id}`, { method: 'DELETE' });
 
+// Orders (Admin)
+export const getOrdersAdmin = (params = {}) => {
+  const queryString = new URLSearchParams(params).toString();
+  return apiCall(`/admin/orders${queryString ? `?${queryString}` : ''}`);
+};
+export const createOrder = (data) => apiCall('/admin/orders', { method: 'POST', body: JSON.stringify(data) });
+export const updateOrder = (id, data) => apiCall(`/admin/orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+export const deleteOrder = (id) => apiCall(`/admin/orders/${id}`, { method: 'DELETE' });
+
 // ==================== AUTH ====================
-export const login = async (email, password) => {
+export const login = async (name, password) => {
   const response = await apiCall('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ name, password })
   });
   if (response.success && response.data.token) {
     localStorage.setItem('admin_token', response.data.token);
@@ -191,9 +210,12 @@ export default {
   getFeaturedProducts,
   getProduct,
   getSections,
+  getSectionsAdmin,
   getSectionByKey,
   getMedia,
   getDistributors,
+  getNavbarSettings,
+  updateNavbarSettings,
   // Admin
   createCategory,
   updateCategory,
@@ -203,15 +225,22 @@ export default {
   deleteProduct,
   createSection,
   updateSection,
+  updateSectionByKey,
   deleteSection,
   createMedia,
   updateMedia,
   deleteMedia,
   uploadImage,
   deleteImage,
+  getDistributorsAdmin,
   createDistributor,
   updateDistributor,
   deleteDistributor,
+  // Orders
+  getOrdersAdmin,
+  createOrder,
+  updateOrder,
+  deleteOrder,
   // Auth
   login,
   logout,

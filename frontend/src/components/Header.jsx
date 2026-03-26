@@ -1,6 +1,6 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { getProducts, getProduct } from '../services/api'
+import { getProducts, getProduct, getNavbarSettings } from '../services/api'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -10,6 +10,7 @@ export default function Header() {
   const [loading, setLoading] = useState(false)
   const [quickViewProduct, setQuickViewProduct] = useState(null)
   const [quickViewLoading, setQuickViewLoading] = useState(false)
+  const [navbarItems, setNavbarItems] = useState([])
   const navigate = useNavigate()
 
   // Close quick view on escape
@@ -22,6 +23,21 @@ export default function Header() {
     }
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
+  }, [])
+
+  // Fetch navbar visibility settings
+  useEffect(() => {
+    const fetchNavbarSettings = async () => {
+      try {
+        const response = await getNavbarSettings()
+        if (response.success) {
+          setNavbarItems(response.data)
+        }
+      } catch (error) {
+        console.error('Error fetching navbar settings:', error)
+      }
+    }
+    fetchNavbarSettings()
   }, [])
 
   const handleSearch = async (e) => {
@@ -73,9 +89,8 @@ export default function Header() {
       <header className="topbar">
         <div className="container topbar-inner">
           <div className="topbar-left">
-            <span>Pakistan</span>
             <span className="dot" />
-            <span>Global Presence</span>
+            <span>Pakistan</span>
           </div>
           <div className="topbar-right">
             <span>Follow us</span>
@@ -108,52 +123,73 @@ export default function Header() {
             <img src="/brand/logo.png" alt="Al-Riwaj" />
           </NavLink>
           <ul className={`nav-links ${open ? 'open' : ''}`}>
-            <li className="nav-item">
-              <NavLink to="/">Home</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/about">About</NavLink>
-            </li>
-            <li className="nav-item has-mega">
-              Our Management
-              <div className="mega">
-                <div>
-                  <h4>Leadership</h4>
-                  <a href="#">Our Founder</a>
-                  <a href="#">Board of Directors</a>
-                  <a href="#">Meet The CEO</a>
-                  <a href="#">Managing Committee</a>
+            {navbarItems.find(item => item.key === 'home')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/">Home</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'about')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/about">About</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'shop')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/shop">Shop</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'our-management')?.visible !== false && (
+              <li className="nav-item has-mega">
+                Our Management
+                <div className="mega">
+                  <div>
+                    <h4>Leadership</h4>
+                    <a href="/founder">Our Founder</a>
+                    <a href="/board-of-directors">Board of Directors</a>
+                    <a href="/ceo">Meet The CEO</a>
+                    <a href="/managing-committee">Managing Committee</a>
+                  </div>
+                  <div>
+                    <h4>Brands</h4>
+                    <a href="#">Al-Riwaj</a>
+                    <a href="#">Recipe Mixes</a>
+                    <a href="#">Plain Spices</a>
+                    
+                  </div>
+                  <div>
+                    <h4>More</h4>
+                    <a href="/media">Media</a>
+                    <a href="/careers">Careers</a>
+                    <a href="/contact">Contact Us</a>
+                  </div>
                 </div>
-                <div>
-                  <h4>Brands</h4>
-                  <a href="#">Al-Riwaj</a>
-                  <a href="#">Recipe Mixes</a>
-                  <a href="#">Plain Spices</a>
-                  
-                </div>
-                <div>
-                  <h4>More</h4>
-                  <a href="/media">Media</a>
-                  <a href="/careers">Careers</a>
-                  <a href="/contact">Contact Us</a>
-                </div>
-              </div>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/products">Products</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/recipes">Recipes</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/media">Media</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/careers">Careers</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/contact">Contact Us</NavLink>
-            </li>            
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'products')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/products">Products</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'recipes')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/recipes">Recipes</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'media')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/media">Media</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'careers')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/careers">Careers</NavLink>
+              </li>
+            )}
+            {navbarItems.find(item => item.key === 'contact')?.visible !== false && (
+              <li className="nav-item">
+                <NavLink to="/contact">Contact Us</NavLink>
+              </li>
+            )}            
           </ul>
           <div className="nav-actions">
             {/* Search Bar */}
@@ -168,16 +204,15 @@ export default function Header() {
                   <path d="m21 21-4.35-4.35"/>
                 </svg>
               </button>
-              {searchOpen && (
-                <div className="search-dropdown">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className="search-input"
-                    autoFocus
-                  />
+              <div className="search-dropdown">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  className="search-input"
+                  autoFocus
+                />
                   {loading && <div className="search-loading">Searching...</div>}
                   {searchResults.length > 0 && (
                     <div className="search-results">
@@ -187,11 +222,16 @@ export default function Header() {
                           className="search-result-item"
                           onClick={() => handleResultClick(product)}
                         >
+                          <div className="search-result-image">
+                            <img 
+                              src={product.image || '/brand/hero.jpeg'} 
+                              alt={product.name}
+                            />
+                          </div>
                           <div className="search-result-info">
                             <div className="search-result-name">{product.name}</div>
                             <div className="search-result-category">{product.category?.name}</div>
                           </div>
-                          <div className="search-result-price">PKR {product.price}</div>
                         </div>
                       ))}
                     </div>
@@ -200,8 +240,7 @@ export default function Header() {
                     <div className="search-no-results">No products found</div>
                   )}
                 </div>
-              )}
-            </div>
+              </div>
             <Link to="/distributor" className="nav-cta">Become a Distributor</Link>
             <button
               className="nav-toggle"

@@ -26,7 +26,14 @@ import BecomeDistributor from './pages/BecomeDistributor.jsx'
 import ManageRecipes from './pages/ManageRecipes.jsx'
 import ManageCareers from './pages/ManageCareers.jsx'
 import ManageContacts from './pages/ManageContacts.jsx'
+import ManageMedia from './pages/ManageMedia.jsx'
+import ManagingCommittee from './pages/ManagingCommittee.jsx'
+import CEO from './pages/CEO.jsx'
+import BoardOfDirectors from './pages/BoardOfDirectors.jsx'
+import Founder from './pages/Founder.jsx'
+import ManageLeadership from './pages/ManageLeadership.jsx'
 import RecipeDetail from './pages/RecipeDetail.jsx'
+import ManageNavbar from './pages/ManageNavbar.jsx'
 import useReveal from './hooks/useReveal.js'
 
 function ScrollManager({ children }) {
@@ -59,7 +66,7 @@ export default function App() {
           <Route path="/media" element={<Media />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/Mattaadmin@2882" element={<Login />} />
+          <Route path="/M.asifsiddqu@419902" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
@@ -73,6 +80,13 @@ export default function App() {
           <Route path="/admin/careers" element={<ManageCareers />} />
           <Route path="/admin/manage/careers" element={<ManageCareers />} />
           <Route path="/admin/manage/contacts" element={<ManageContacts />} />
+          <Route path="/admin/media" element={<ManageMedia />} />
+          <Route path="/founder" element={<Founder />} />
+          <Route path="/board-of-directors" element={<BoardOfDirectors />} />
+          <Route path="/ceo" element={<CEO />} />
+          <Route path="/managing-committee" element={<ManagingCommittee />} />
+          <Route path="/admin/leadership" element={<ManageLeadership />} />
+          <Route path="/admin/navbar" element={<ManageNavbar />} />
         </Routes>
         </ScrollManager>
       </PageTransition>

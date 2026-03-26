@@ -12,42 +12,61 @@ use Illuminate\Support\Facades\File;
 class MediaController extends Controller
 {
     /**
-     * Upload a file to public/storage/products folder
+     * Upload a file to public/storage folder (images and videos)
      */
     public function upload(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'file' => 'required|file',
         ]);
 
         try {
             $file = $request->file('file');
             
+            // Determine file type and set appropriate validation and path
+            $mimeType = $file->getMimeType();
+            $isVideo = strpos($mimeType, 'video/') === 0;
+            $isImage = strpos($mimeType, 'image/') === 0;
+            
+            if (!$isVideo && !$isImage) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only image and video files are allowed'
+                ], 422);
+            }
+            
+            // Set max size: 10MB for images, 100MB for videos
+            $maxSize = $isVideo ? 100000 : 2048; // KB
+            $maxSizeStr = $isVideo ? '100MB' : '2MB';
+            
             // Generate unique filename
             $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             
-            // Create products directory in public folder if not exists
-            $uploadPath = public_path('storage/products');
+            // Choose upload directory based on file type
+            $subFolder = $isVideo ? 'videos' : 'products';
+            $uploadPath = public_path('storage/' . $subFolder);
+            
             if (!File::exists($uploadPath)) {
                 File::makeDirectory($uploadPath, 0755, true);
             }
             
-            // Store file content directly to avoid temp file issues
+            // Store file content
             $fileContent = file_get_contents($file->getRealPath());
             file_put_contents($uploadPath . '/' . $fileName, $fileContent);
             
-            $filePath = 'storage/products/' . $fileName;
+            $filePath = 'storage/' . $subFolder . '/' . $fileName;
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'file_name' => $fileName,
                     'original_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
+                    'mime_type' => $mimeType,
                     'file_size' => strlen($fileContent),
                     'file_path' => $filePath,
                     'url' => asset($filePath)
                 ],
+                'path' => $filePath,
                 'message' => 'File uploaded successfully'
             ], 201);
         } catch (\Exception $e) {
@@ -108,18 +127,25 @@ class MediaController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'file_name' => 'required|string',
-            'original_name' => 'required|string',
-            'mime_type' => 'required|string',
-            'file_path' => 'required|string',
-            'file_size' => 'required|string',
+            'file_name' => 'nullable|string',
+            'original_name' => 'nullable|string',
+            'mime_type' => 'nullable|string',
+            'file_path' => 'nullable|string',
+            'file_size' => 'nullable|string',
             'alt_text' => 'nullable|string',
             'caption' => 'nullable|string',
             'category' => 'nullable|string',
             'is_active' => 'boolean',
+            'created_at' => 'nullable|date',
         ]);
 
         $media = Media::create($validated);
+
+        // Handle created_at if provided
+        if ($request->has('created_at')) {
+            $media->created_at = new \DateTime($request->created_at);
+            $media->save();
+        }
 
         return response()->json([
             'success' => true,
@@ -148,9 +174,16 @@ class MediaController extends Controller
             'caption' => 'nullable|string',
             'category' => 'nullable|string',
             'is_active' => 'boolean',
+            'created_at' => 'nullable|date',
         ]);
 
         $media->update($validated);
+
+        // Handle created_at update separately if provided
+        if ($request->has('created_at')) {
+            $media->created_at = new \DateTime($request->created_at);
+            $media->save();
+        }
 
         return response()->json([
             'success' => true,
